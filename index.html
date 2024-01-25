@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/Gatewaycoverage_1.js"></script>
+        <script src="data/GateWayZones_2.js"></script>
+        <script src="data/LocationofGateway_3.js"></script>
+        <script src="data/Sensors_4.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:19, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 19,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Gatewaycoverage_1(feature, layer) {
+            var popupContent = '<table>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Gatewaycoverage_1_0() {
+            return {
+                pane: 'pane_Gatewaycoverage_1',
+                opacity: 1,
+                color: 'rgba(228,26,28,0.408)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Gatewaycoverage_1');
+        map.getPane('pane_Gatewaycoverage_1').style.zIndex = 401;
+        map.getPane('pane_Gatewaycoverage_1').style['mix-blend-mode'] = 'normal';
+        var layer_Gatewaycoverage_1 = new L.geoJson(json_Gatewaycoverage_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Gatewaycoverage_1',
+            layerName: 'layer_Gatewaycoverage_1',
+            pane: 'pane_Gatewaycoverage_1',
+            onEachFeature: pop_Gatewaycoverage_1,
+            style: style_Gatewaycoverage_1_0,
+        });
+        bounds_group.addLayer(layer_Gatewaycoverage_1);
+        map.addLayer(layer_Gatewaycoverage_1);
+        function pop_GateWayZones_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name:</th>\
+                        <td class="visible-with-data" id="Name:">' + (feature.properties['Name:'] !== null ? autolinker.link(feature.properties['Name:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Owner:</th>\
+                        <td class="visible-with-data" id="Owner:">' + (feature.properties['Owner:'] !== null ? autolinker.link(feature.properties['Owner:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Brand:</th>\
+                        <td class="visible-with-data" id="Brand:">' + (feature.properties['Brand:'] !== null ? autolinker.link(feature.properties['Brand:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Model:</th>\
+                        <td class="visible-with-data" id="Model:">' + (feature.properties['Model:'] !== null ? autolinker.link(feature.properties['Model:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(feature.properties['Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sim Type</th>\
+                        <td class="visible-with-data" id="Sim Type">' + (feature.properties['Sim Type'] !== null ? autolinker.link(feature.properties['Sim Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_GateWayZones_2_0() {
+            return {
+                pane: 'pane_GateWayZones_2',
+                opacity: 1,
+                color: 'rgba(53,121,177,0.9)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_GateWayZones_2');
+        map.getPane('pane_GateWayZones_2').style.zIndex = 402;
+        map.getPane('pane_GateWayZones_2').style['mix-blend-mode'] = 'normal';
+        var layer_GateWayZones_2 = new L.geoJson(json_GateWayZones_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_GateWayZones_2',
+            layerName: 'layer_GateWayZones_2',
+            pane: 'pane_GateWayZones_2',
+            onEachFeature: pop_GateWayZones_2,
+            style: style_GateWayZones_2_0,
+        });
+        bounds_group.addLayer(layer_GateWayZones_2);
+        map.addLayer(layer_GateWayZones_2);
+        function pop_LocationofGateway_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name:</th>\
+                        <td class="visible-with-data" id="Name:">' + (feature.properties['Name:'] !== null ? autolinker.link(feature.properties['Name:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Owner:</th>\
+                        <td class="visible-with-data" id="Owner:">' + (feature.properties['Owner:'] !== null ? autolinker.link(feature.properties['Owner:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Brand:</th>\
+                        <td class="visible-with-data" id="Brand:">' + (feature.properties['Brand:'] !== null ? autolinker.link(feature.properties['Brand:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Model:</th>\
+                        <td class="visible-with-data" id="Model:">' + (feature.properties['Model:'] !== null ? autolinker.link(feature.properties['Model:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(feature.properties['Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sim Type</th>\
+                        <td class="visible-with-data" id="Sim Type">' + (feature.properties['Sim Type'] !== null ? autolinker.link(feature.properties['Sim Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">range</th>\
+                        <td class="visible-with-data" id="range">' + (feature.properties['range'] !== null ? autolinker.link(feature.properties['range'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_LocationofGateway_3_0() {
+            return {
+                pane: 'pane_LocationofGateway_3',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_LocationofGateway_3');
+        map.getPane('pane_LocationofGateway_3').style.zIndex = 403;
+        map.getPane('pane_LocationofGateway_3').style['mix-blend-mode'] = 'normal';
+        var layer_LocationofGateway_3 = new L.geoJson(json_LocationofGateway_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_LocationofGateway_3',
+            layerName: 'layer_LocationofGateway_3',
+            pane: 'pane_LocationofGateway_3',
+            onEachFeature: pop_LocationofGateway_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_LocationofGateway_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_LocationofGateway_3);
+        map.addLayer(layer_LocationofGateway_3);
+        function pop_Sensors_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Project or Location</th>\
+                        <td class="visible-with-data" id="Project or Location">' + (feature.properties['Project or Location'] !== null ? autolinker.link(feature.properties['Project or Location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sensor:</th>\
+                        <td class="visible-with-data" id="Sensor:">' + (feature.properties['Sensor:'] !== null ? autolinker.link(feature.properties['Sensor:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">TTN Aplication</th>\
+                        <td class="visible-with-data" id="TTN Aplication">' + (feature.properties['TTN Aplication'] !== null ? autolinker.link(feature.properties['TTN Aplication'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Assigned to:</th>\
+                        <td class="visible-with-data" id="Assigned to:">' + (feature.properties['Assigned to:'] !== null ? autolinker.link(feature.properties['Assigned to:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Brand:</th>\
+                        <td class="visible-with-data" id="Brand:">' + (feature.properties['Brand:'] !== null ? autolinker.link(feature.properties['Brand:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Model:</th>\
+                        <td class="visible-with-data" id="Model:">' + (feature.properties['Model:'] !== null ? autolinker.link(feature.properties['Model:'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Air Temperature</th>\
+                        <td class="visible-with-data" id="Air Temperature">' + (feature.properties['Air Temperature'] !== null ? autolinker.link(feature.properties['Air Temperature'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ext Probe Temp</th>\
+                        <td class="visible-with-data" id="Ext Probe Temp">' + (feature.properties['Ext Probe Temp'] !== null ? autolinker.link(feature.properties['Ext Probe Temp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Air Pressure</th>\
+                        <td class="visible-with-data" id="Air Pressure">' + (feature.properties['Air Pressure'] !== null ? autolinker.link(feature.properties['Air Pressure'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Air Humidity</th>\
+                        <td class="visible-with-data" id="Air Humidity">' + (feature.properties['Air Humidity'] !== null ? autolinker.link(feature.properties['Air Humidity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Soil Conductivity</th>\
+                        <td class="visible-with-data" id="Soil Conductivity">' + (feature.properties['Soil Conductivity'] !== null ? autolinker.link(feature.properties['Soil Conductivity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Soil Temperature</th>\
+                        <td class="visible-with-data" id="Soil Temperature">' + (feature.properties['Soil Temperature'] !== null ? autolinker.link(feature.properties['Soil Temperature'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Soil Moisture</th>\
+                        <td class="visible-with-data" id="Soil Moisture">' + (feature.properties['Soil Moisture'] !== null ? autolinker.link(feature.properties['Soil Moisture'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PM 1.0</th>\
+                        <td class="visible-with-data" id="PM 1.0">' + (feature.properties['PM 1.0'] !== null ? autolinker.link(feature.properties['PM 1.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PM 2.0</th>\
+                        <td class="visible-with-data" id="PM 2.0">' + (feature.properties['PM 2.0'] !== null ? autolinker.link(feature.properties['PM 2.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PM 4.0</th>\
+                        <td class="visible-with-data" id="PM 4.0">' + (feature.properties['PM 4.0'] !== null ? autolinker.link(feature.properties['PM 4.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PM 10.0</th>\
+                        <td class="visible-with-data" id="PM 10.0">' + (feature.properties['PM 10.0'] !== null ? autolinker.link(feature.properties['PM 10.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">IAQ</th>\
+                        <td class="visible-with-data" id="IAQ">' + (feature.properties['IAQ'] !== null ? autolinker.link(feature.properties['IAQ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CO2</th>\
+                        <td class="visible-with-data" id="CO2">' + (feature.properties['CO2'] !== null ? autolinker.link(feature.properties['CO2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">CO2e</th>\
+                        <td class="visible-with-data" id="CO2e">' + (feature.properties['CO2e'] !== null ? autolinker.link(feature.properties['CO2e'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">EPA</th>\
+                        <td class="visible-with-data" id="EPA">' + (feature.properties['EPA'] !== null ? autolinker.link(feature.properties['EPA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Fast EPA</th>\
+                        <td class="visible-with-data" id="Fast EPA">' + (feature.properties['Fast EPA'] !== null ? autolinker.link(feature.properties['Fast EPA'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">VOC</th>\
+                        <td class="visible-with-data" id="VOC">' + (feature.properties['VOC'] !== null ? autolinker.link(feature.properties['VOC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NC PM 0.5</th>\
+                        <td class="visible-with-data" id="NC PM 0.5">' + (feature.properties['NC PM 0.5'] !== null ? autolinker.link(feature.properties['NC PM 0.5'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NC PM 1.0</th>\
+                        <td class="visible-with-data" id="NC PM 1.0">' + (feature.properties['NC PM 1.0'] !== null ? autolinker.link(feature.properties['NC PM 1.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NC PM 2.5</th>\
+                        <td class="visible-with-data" id="NC PM 2.5">' + (feature.properties['NC PM 2.5'] !== null ? autolinker.link(feature.properties['NC PM 2.5'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NC PM 4.0</th>\
+                        <td class="visible-with-data" id="NC PM 4.0">' + (feature.properties['NC PM 4.0'] !== null ? autolinker.link(feature.properties['NC PM 4.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">NC PM 10.0</th>\
+                        <td class="visible-with-data" id="NC PM 10.0">' + (feature.properties['NC PM 10.0'] !== null ? autolinker.link(feature.properties['NC PM 10.0'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Vibtation</th>\
+                        <td class="visible-with-data" id="Vibtation">' + (feature.properties['Vibtation'] !== null ? autolinker.link(feature.properties['Vibtation'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Acellerometer</th>\
+                        <td class="visible-with-data" id="Acellerometer">' + (feature.properties['Acellerometer'] !== null ? autolinker.link(feature.properties['Acellerometer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Orientation (X,Y,Z)</th>\
+                        <td class="visible-with-data" id="Orientation (X,Y,Z)">' + (feature.properties['Orientation (X,Y,Z)'] !== null ? autolinker.link(feature.properties['Orientation (X,Y,Z)'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Water Leak</th>\
+                        <td class="visible-with-data" id="Water Leak">' + (feature.properties['Water Leak'] !== null ? autolinker.link(feature.properties['Water Leak'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Door (Count)</th>\
+                        <td class="visible-with-data" id="Door (Count)">' + (feature.properties['Door (Count)'] !== null ? autolinker.link(feature.properties['Door (Count)'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">GPS</th>\
+                        <td class="visible-with-data" id="GPS">' + (feature.properties['GPS'] !== null ? autolinker.link(feature.properties['GPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+            var popup = layer.getPopup();
+            var content = popup.getContent();
+            var updatedContent = removeEmptyRowsFromPopupContent(content, feature);
+            popup.setContent(updatedContent);
+        }
+
+        function style_Sensors_4_0() {
+            return {
+                pane: 'pane_Sensors_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,0,4,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Sensors_4');
+        map.getPane('pane_Sensors_4').style.zIndex = 404;
+        map.getPane('pane_Sensors_4').style['mix-blend-mode'] = 'normal';
+        var layer_Sensors_4 = new L.geoJson(json_Sensors_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Sensors_4',
+            layerName: 'layer_Sensors_4',
+            pane: 'pane_Sensors_4',
+            onEachFeature: pop_Sensors_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Sensors_4_0(feature));
+            },
+        });
+        var cluster_Sensors_4 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_Sensors_4.addLayer(layer_Sensors_4);
+
+        bounds_group.addLayer(layer_Sensors_4);
+        cluster_Sensors_4.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Sensors_4.png" /> Sensors': cluster_Sensors_4,'<img src="legend/LocationofGateway_3.png" /> Location of Gateway': layer_LocationofGateway_3,'<img src="legend/GateWayZones_2.png" /> GateWayZones': layer_GateWayZones_2,'<img src="legend/Gatewaycoverage_1.png" /> Gateway coverage ': layer_Gatewaycoverage_1,"OSM Standard": layer_OSMStandard_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
